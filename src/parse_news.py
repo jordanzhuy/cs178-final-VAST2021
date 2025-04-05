@@ -27,6 +27,50 @@ def setup_database(db_path, delete_existing=True):
     connection = kuzu.Connection(db)
     return connection
 
+def parse_line(line, article_entry):
+    '''
+    parse single line in news article and save relavant info in article_entry. 
+    return true if start of content.
+    '''
+    label_pattern = globals.NEWS_LABEL_PATTERN
+    label_match = label_pattern.match(line)
+    if label_match:
+        label, value = label_match.groups()
+        label = label.upper()
+        value = value.strip()
+        if label == "SOURCE":
+            article_entry["source"] = value
+        elif label == "TITLE":
+            article_entry["title"] = value
+        elif label == "PUBLISHED":
+            try:
+                parsed_date = parser.parse(value, fuzzy=True, ignoretz=True)
+                date = parsed_date.strftime("%Y-%m-%d")
+                article_entry["publish_date"] = date
+            except Exception:
+                # sometimes its author in published field
+                if not article_entry["author"]:
+                    article_entry["author"] = value
+        elif label == "LOCATION":
+            article_entry["location"] = value
+        elif label == "AUTHOR":
+            article_entry["author"] = value
+        return False
+    else:
+        # skip empty line
+        if not line.strip():
+            return False
+        # possibly is isolated date
+        if len(line) < 30:
+            try:
+                parsed_date = parser.parse(line, fuzzy=True)
+                date = parsed_date.strftime("%Y-%m-%d")
+                article_entry["publish_date"] = date
+                return False
+            except:
+                return False
+        return True
+                
 def read_article(article_path: Path):
     '''read article into a dict entry'''
     with open(article_path, "r", errors='ignore') as file:
@@ -37,54 +81,19 @@ def read_article(article_path: Path):
         label_pattern = globals.LABEL_PATTERN
         while True: 
             line = file.readline()
-            label_match = label_pattern.match(line)
-            #print(label_match, line, label_pattern)
-            if label_match:
-                label, value = label_match.groups()
-                label = label.upper()
-                value = value.strip()
-                if label == "SOURCE":
-                    article_entry["source"] = value
-                elif label == "TITLE":
-                    article_entry["title"] = value
-                elif label == "PUBLISHED":
-                    try:
-                        parsed_date = parser.parse(value, fuzzy=True, ignoretz=True)
-                        date = parsed_date.strftime("%Y-%m-%d")
-                        article_entry["publish_date"] = date
-                    except Exception:
-                        # sometimes its author in published field
-                        if not article_entry["author"]:
-                            article_entry["author"] = value
-                elif label == "LOCATION":
-                    article_entry["location"] = value
-                elif label == "AUTHOR":
-                    article_entry["author"] = value
-            else:
-                # skip empty line
-                if not line.strip():
-                    continue
-
-                # possibly is isolated date
-                if len(line) < 30:
-                    try:
-                        parsed_date = parser.parse(line, fuzzy=True)
-                        date = parsed_date.strftime("%Y-%m-%d")
-                        article_entry["publish_date"] = date
-                        continue
-                    except:
-                        pass
-                
+            if not line: # at eof
+                break
+            if (parse_line(line, article_entry)): # parse each line into entry until start of content
                 # read remaining content
                 s = line.strip()
                 for cline in file.readlines():
-                    if cline.strip():
-                        s += cline.strip()
+                    cstriped = cline.strip()
+                    if cstriped:
+                        s += cstriped
                 article_entry["content"] = s.strip()
+                # end of content, stop reading
                 break
 
-            if not line:
-                break
     return article_entry
 
 
@@ -99,6 +108,7 @@ def create_news_csv():
         cw = csv.DictWriter(f, header, delimiter='|', quotechar='~', quoting=csv.QUOTE_MINIMAL)
         cw.writeheader()
         cw.writerows(entries)
+    print(f"Created news_articles.csv at {globals.DATA_PATH}/news_articles.csv")
 
 def init_db():
     connection = setup_database(globals.DB_PATH, delete_existing=True)

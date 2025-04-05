@@ -9,4 +9,4 @@ NEWS_PATH = DATA_PATH + "/News Articles"
 
 ARTICLE_COLUMNS = ["articleID", "source", "title", "author", "publish_date", "location", "content"]
 
-LABEL_PATTERN = re.compile(r'^(SOURCE|TITLE|PUBLISHED|AUTHOR|LOCATION|CONTENT)\s*:\s*(.+)', re.IGNORECASE)
+NEWS_LABEL_PATTERN = re.compile(r'^(SOURCE|TITLE|PUBLISHED|AUTHOR|LOCATION|CONTENT)\s*:\s*(.+)', re.IGNORECASE)
