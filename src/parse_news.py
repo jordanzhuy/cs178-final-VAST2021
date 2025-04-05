@@ -49,7 +49,7 @@ def read_article(article_path: Path):
                     article_entry["title"] = value
                 elif label == "PUBLISHED":
                     try:
-                        parsed_date = parser.parse(value, fuzzy=True)
+                        parsed_date = parser.parse(value, fuzzy=True, ignoretz=True)
                         date = parsed_date.strftime("%Y-%m-%d")
                         article_entry["publish_date"] = date
                     except Exception:
