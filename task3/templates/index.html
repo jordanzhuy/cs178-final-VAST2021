@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 3 Graph Visualization (Relationship)</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div id="navbar" class="navbar">
+        <h1>Unofficial Relationships</h1>
+        <div class="tab-navigation">
+          <button class="tab-button active" data-tab="org-person">Organization-Person Graph</button>
+          <button class="tab-button" data-tab="person-person">Person-Person Graph</button>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- Sidebar Config Panel -->
+        <div class="config_container">
+          <h2 class="config-title">Filter Settings</h2>
+
+          <!-- Org-Person Filters -->
+          <div class="config-section org-person-tab">
+            <h3 class="section-title">Organization Filter</h3>
+            <div class="form-group">
+              <label for="orgFilter">Select Organization:</label>
+              <select id="orgFilter" class="select-input">
+                <option value="">All Organizations</option>
+              </select>
+            </div>
+            <button id="applyOrgFilter" class="apply-button">Apply Organization Filter</button>
+          </div>
+
+          <div class="config-section org-person-tab">
+            <h3 class="section-title">Person Co-occurrence Filter</h3>
+            <div class="form-group">
+              <label for="personFilter">Select Person:</label>
+              <select id="personFilter" class="select-input">
+                <option value="">Select a person</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="minWeight">Minimum Co-occurrence:</label>
+              <input type="number" id="minWeight" class="number-input" min="1" value="1">
+            </div>
+            <button id="applyPersonFilter" class="apply-button">Apply Person Filter</button>
+          </div>
+
+          <!-- Person-Person Filters -->
+          <div class="config-section person-person-tab" style="display: none;" id="person-person-filters">
+            <h3 class="section-title">Person-Person Filter</h3>
+            <div class="form-group">
+              <label for="person-person-select">Select Person:</label>
+              <select id="person-person-select" class="select-input">
+                <option value="">Select a person</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="personMinWeight">Minimum Co-occurrence:</label>
+              <input type="number" id="personMinWeight" class="number-input" min="1" value="1">
+            </div>
+            <button id="applyPersonPersonFilter" class="apply-button">Apply Person-Person Filter</button>
+          </div>
+        </div>
+
+        <!-- Visualization Area -->
+        <div id="visualization" class="vis_container">
+          <svg id="graph"></svg>
+          <div id="loadingOverlay" class="loading-overlay" style="display: none">Loading...</div>
+          <div id="errorMessage" class="error-message" style="display: none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/visualization.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+      // Tab Switching Logic
+      document.addEventListener("DOMContentLoaded", () => {
+        const tabButtons = document.querySelectorAll(".tab-button");
+        tabButtons.forEach(btn => {
+          btn.addEventListener("click", () => {
+            tabButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const tab = btn.dataset.tab;
+            if (tab === "org-person") {
+              document.querySelectorAll(".org-person-tab").forEach(el => el.style.display = "block");
+              document.querySelectorAll(".person-person-tab").forEach(el => el.style.display = "none");
+            } else {
+              document.querySelectorAll(".org-person-tab").forEach(el => el.style.display = "none");
+              document.querySelectorAll(".person-person-tab").forEach(el => el.style.display = "block");
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
