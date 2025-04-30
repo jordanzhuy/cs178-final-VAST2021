@@ -72,7 +72,6 @@ CREATE (:PERSON {name: "tethys"});
 CREATE (:PERSON {name: "miriam avila"});
 CREATE (:PERSON {name: "siopa"});
 CREATE (:PERSON {name: "emilio haber"});
-CREATE (:PERSON {name: "the people of kronos"});
 CREATE (:PERSON {name: "sten sanjorge sr"});
 CREATE (:PERSON {name: "hank fluss - found"});
 CREATE (:PERSON {name: "sanjorge sr"});
@@ -103,7 +102,6 @@ CREATE (:PERSON {name: "van"});
 CREATE (:PERSON {name: "sten sanjorge, jr"});
 CREATE (:PERSON {name: "haneson ngohebo"});
 CREATE (:PERSON {name: "kapelou ii"});
-CREATE (:ORG {name: "protectors of kronos"});
 CREATE (:PERSON {name: "dorel kapelou"});
 CREATE (:PERSON {name: "sten sanjorge, sr.sanjorge, sr."});
 CREATE (:PERSON {name: "sanjorge"});
@@ -117,8 +115,8 @@ CREATE (:PERSON {name: "spokesman adrien carman"});
 CREATE (:PERSON {name: "luis araullo"});
 CREATE (:PERSON {name: "tomas sarto"});
 CREATE (:PERSON {name: "sten st george"});
-CREATE (:PERSON {name: "karel抯"});
-CREATE (:PERSON {name: "揓uliana"});
+CREATE (:PERSON {name: "karel"});
+CREATE (:PERSON {name: "uliana"});
 CREATE (:PERSON {name: "ronald gerard"});
 CREATE (:PERSON {name: "willem vasco-pais"});
 CREATE (:PERSON {name: "john rathburn"});
@@ -329,7 +327,7 @@ MATCH (a {name: "edvard vann"}), (b {name: "kronos government"})
 MATCH (a {name: "edvard vann"}), (b {name: "kronos"})
         CREATE (a)-[:CO_OCCURS_WITH {weight: 19, article_ids: "7,29,49,50,107,125,140,145,326,397,412,461,469,494,512,594,673,712,818"}]->(b);
 MATCH (a {name: "elian karel"}), (b {name: "pok"})
-        CREATE (a)-[:CO_OCCURS_WITH {weight: 43, article_ids: "14,18,24,54,73,74,116,132,149,162,168,175,189,213,249,257,269,282,294,300,343,351,353,357,387,398,437,508,572,577,581,620,623,662,667,670,683,698,709,743,767,808,837"}]->(b);
+        CREATE (a)-[:CO_OCCURS_WITH {weight: 45, article_ids: "14,18,24,54,73,74,116,132,149,162,168,175,189,213,249,257,269,282,294,300,343,351,353,357,387,398,437,508,572,577,581,620,623,662,667,670,683,698,709,743,767,808,820,836,837"}]->(b);
 MATCH (a {name: "kronos"}), (b {name: "silvia marek"})
         CREATE (a)-[:CO_OCCURS_WITH {weight: 17, article_ids: "18,101,116,135,207,239,358,414,570,572,620,662,670,698,773,840,843"}]->(b);
 MATCH (a {name: "pok"}), (b {name: "silvia marek"})
