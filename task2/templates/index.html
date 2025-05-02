@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Entity Sentiment Heatmap</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="/static/app.js" defer></script>
+    
+    <style>
+        .tab { display: none; }
+        .tab.active { display: flex; flex-direction: column; gap: 20px; }
+        .tab-buttons button { margin-right: 10px; }
+        .plot-row { display: flex; gap: 20px; }
+        .plot-container { flex: 1; height: 600px; }
+        .article-box {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <body>
+        <h1>Entity Sentiment Heatmap</h1>
+    
+        <div class="plot-row" style="display: flex; gap: 20px;">
+            <!-- Entity heatmap -->
+            <div class="plot-container" style="flex: 1;">
+                <label for="entity-select">Choose an entity:</label>
+                <select id="entity-select"></select>
+                <div id="heatmap" style="width: 100%; height: 800px;"></div>
+                <div id="article-content" class="article-box" style="margin-top:10px;"></div>
+            </div>
+    
+            <!-- Source vs Entity heatmap -->
+            <div class="plot-container" style="flex: 1;">
+                <label for="source-entity-select">Choose a news source:</label>
+                <select id="source-entity-select"></select>
+                <div id="source-entity-heatmap" style="width: 100%; height: 800px;"></div>
+                <div id="source-entity-article-content" class="article-box" style="margin-top:10px;"></div>
+            </div>
+        </div>
+    </body>
+    
+</body>
+</html>
