@@ -10,10 +10,11 @@ import pandas as pd
 df = pd.read_csv("../data/df_expanded_with_sentiment.csv")
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'utils')))
-from dbop import setup_database
+from dbop import setup_database, init_db
 
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
+init_db()
 app.conn = setup_database("../db", False)
  
 
