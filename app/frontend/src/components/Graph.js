@@ -6,13 +6,12 @@ const Graph = ({ data }) => {
   const svgRef = useRef();
   const {
     nodeSizeMetric,
-    setNodeSizeMetric,
     nodeColorMetric,
-    setNodeColorMetric
   } = useGraphConfig();
+
   useEffect(() => {
     console.log(data)
-    
+    if (!data){return}
     const width = 1200;
     const height = 800;
 
@@ -186,7 +185,7 @@ const Graph = ({ data }) => {
 
   }, [data]);
 
-  return <svg ref={svgRef} style={{ width: "100%", height: "100%" }} />;
+  return <svg id="graph" ref={svgRef} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default Graph;

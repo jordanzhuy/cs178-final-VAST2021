@@ -9,9 +9,9 @@ const QuestionHeader = ({ currentQ, setCurrentQ }) => (
       selectedKeys={[currentQ]}
       onClick={(e) => setCurrentQ(e.key)}
       items={[
-        { key: 'Q1', label: 'Q1' },
-        { key: 'Q2', label: 'Q2' },
-        { key: 'Q3', label: 'Q3' },
+        { key: 1, label: 'Q1' },
+        { key: 2, label: 'Q2' },
+        { key: 3, label: 'Q3' },
       ]}
     />
   </Header>

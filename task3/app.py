@@ -61,13 +61,15 @@ def get_graph_data():
 
         dataset_type = data.get("dataset", "import")  # default to import
         organization = data.get("organization", None)
+        print(dataset_type)
+        print(organization)
 
         # 选择不同的数据文件
         if dataset_type == "article":
             cypher_path = os.path.join(os.path.dirname(__file__), "data/entity_graph_article.cypher")
         else:
             cypher_path = os.path.join(os.path.dirname(__file__), "data/entity_graph_import.cypher")
-
+        print(cypher_path)
         graph_data = parse_cypher_file(cypher_path)
 
         # 如果选择了组织，过滤相关节点
