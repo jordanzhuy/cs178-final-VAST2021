@@ -21,62 +21,71 @@
         <!-- Sidebar Config Panel -->
         <div class="config_container">
 
-          <!-- Graph Source -->
-          <div class="config-section">
-            <h3 class="section-title">Graph Source</h3>
-            <div class="form-group">
-              <label for="datasetSelector">Select Dataset:</label>
-              <select id="datasetSelector" class="select-input">
-                <option value="article">Article Level</option>
-                <option value="sentence">Sentence Level</option>
-              </select>
-            </div>
-          </div>
+          <!-- Org-Person Config Section -->
+          <div class="org-person-tab">
 
-          <!-- Filter Settings -->
-          <h2 class="config-title">Filter Settings</h2>
+            <!-- Graph Source -->
+            <div class="config-section">
+              <h3 class="section-title">Graph Source</h3>
+              <div class="form-group">
+                <label for="datasetSelector">Select Dataset:</label>
+                <select id="datasetSelector" class="select-input">
+                  <option value="article">Article Level</option>
+                  <option value="sentence">Sentence Level</option>
+                </select>
+              </div>
+            </div>
 
-          <!-- Org-Person Filters -->
-          <div class="config-section org-person-tab">
-            <h3 class="section-title">Organization Filter</h3>
-            <div class="form-group">
-              <label for="orgFilter">Select Organization:</label>
-              <select id="orgFilter" class="select-input">
-                <option value="">All Organizations</option>
-              </select>
-            </div>
-            <button id="applyOrgFilter" class="apply-button">Apply Organization Filter</button>
-          </div>
+            <!-- Filter Settings -->
+            <h2 class="config-title">Filter Settings</h2>
 
-          <div class="config-section org-person-tab">
-            <h3 class="section-title">Person Co-occurrence Filter</h3>
-            <div class="form-group">
-              <label for="personFilter">Select Person:</label>
-              <select id="personFilter" class="select-input">
-                <option value="">Select a person</option>
-              </select>
+            <!-- Organization Filter -->
+            <div class="config-section">
+              <h3 class="section-title">Organization Filter</h3>
+              <div class="form-group">
+                <label for="orgFilter">Select Organization:</label>
+                <select id="orgFilter" class="select-input">
+                  <option value="">All Organizations</option>
+                </select>
+              </div>
+              <button id="applyOrgFilter" class="apply-button">Apply Organization Filter</button>
             </div>
-            <div class="form-group">
-              <label for="minWeight">Minimum Co-occurrence:</label>
-              <input type="number" id="minWeight" class="number-input" min="1" value="1">
-            </div>
-            <button id="applyPersonFilter" class="apply-button">Apply Person Filter</button>
-          </div>
 
-          <!-- Person-Person Filters -->
-          <div class="config-section person-person-tab" style="display: none;" id="person-person-filters">
-            <h3 class="section-title">Person-Person Filter</h3>
-            <div class="form-group">
-              <label for="person-person-select">Select Person:</label>
-              <select id="person-person-select" class="select-input">
-                <option value="">Select a person</option>
-              </select>
+            <!-- Person Filter -->
+            <div class="config-section">
+              <h3 class="section-title">Person Co-occurrence Filter</h3>
+              <div class="form-group">
+                <label for="personFilter">Select Person:</label>
+                <select id="personFilter" class="select-input">
+                  <option value="">Select a person</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="minWeight">Minimum Co-occurrence:</label>
+                <input type="number" id="minWeight" class="number-input" min="1" value="1">
+              </div>
+              <button id="applyPersonFilter" class="apply-button">Apply Person Filter</button>
             </div>
-            <div class="form-group">
-              <label for="personMinWeight">Minimum Connection Numbers:</label>
-              <input type="number" id="personMinWeight" class="number-input" min="1" value="1">
+
+          </div> <!-- end of org-person-tab -->
+
+          <!-- Person-Person Config Section -->
+          <div class="person-person-tab" style="display: none;" id="person-person-filters">
+            <h2 class="config-title">Filter Settings</h2>
+            <div class="config-section">
+              <h3 class="section-title">Person-Person Filter</h3>
+              <div class="form-group">
+                <label for="person-person-select">Select Person:</label>
+                <select id="person-person-select" class="select-input">
+                  <option value="">Select a person</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="personMinWeight">Minimum Connection Numbers:</label>
+                <input type="number" id="personMinWeight" class="number-input" min="1" value="1">
+              </div>
+              <button id="applyPersonPersonFilter" class="apply-button">Apply Person-Person Filter</button>
             </div>
-            <button id="applyPersonPersonFilter" class="apply-button">Apply Person-Person Filter</button>
           </div>
         </div>
 
