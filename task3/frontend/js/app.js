@@ -9,6 +9,7 @@ console.log("App module loaded");
   let currentMinWeight = 1;
   let currentPersonPersonFilter = null;
   let currentPersonPersonMinWeight = 1;
+  let currentDataset = 'article';
 
   function init() {
     if (typeof Visualization === "undefined") return showError("Visualization module failed to load");
@@ -16,6 +17,7 @@ console.log("App module loaded");
 
     Visualization.init("#visualization");
     setupTabSwitching();
+    setupDatasetSwitching();
 
     API.checkAvailable().then((available) => {
       if (!available) return showError("Backend API not available");
@@ -35,21 +37,30 @@ console.log("App module loaded");
         document.querySelectorAll(".person-person-tab").forEach(el => el.style.display = (currentGraphType === 'person-person') ? "block" : "none");
 
         if (currentGraphType === 'org-person') {
-          Visualization.render(currentGraphData);
+          fetchAndRenderGraph();
         } else {
-          Visualization.render(currentEmailGraphData);
+          Visualization.render(currentEmailGraphData, { view: 'person-person' });
         }
       });
     });
   }
 
+  function setupDatasetSwitching() {
+    const selector = document.getElementById("datasetSelector");
+    if (!selector) return;
+    selector.addEventListener("change", () => {
+      currentDataset = selector.value;
+      fetchAndRenderGraph();
+    });
+  }
+
   async function fetchAndRenderGraph() {
     try {
-      const data = await API.fetchGraphData({});
+      const data = await API.fetchGraphData({ dataset: currentDataset });
       currentGraphData = data;
       initOrgFilter();
       initPersonFilter();
-      if (currentGraphType === 'org-person') Visualization.render(data);
+      if (currentGraphType === 'org-person') Visualization.render(data, { view: 'org-person' });
     } catch (err) {
       showError("Failed to load org-person graph");
     }
@@ -127,7 +138,7 @@ console.log("App module loaded");
 
     const nodeIds = new Set(links.flatMap(l => [l.source, l.target]));
     nodes = nodes.filter(n => nodeIds.has(n.id));
-    Visualization.render({ nodes, links });
+    Visualization.render({ nodes, links }, { view: 'org-person' });
   }
 
   function initPersonPersonFilter() {
@@ -166,7 +177,7 @@ console.log("App module loaded");
 
     const nodeIds = new Set(links.flatMap(l => [l.source, l.target]));
     nodes = nodes.filter(n => nodeIds.has(n.id));
-    Visualization.render({ nodes, links });
+    Visualization.render({ nodes, links }, { view: 'person-person' });
   }
 
   function showError(msg) {
