@@ -5,9 +5,9 @@ import QuestionHeader from './components/QuestionHeader';
 import SidebarFilter from './components/Sidebar'
 import { GraphConfigProvider } from './contexts/GraphConfigContext';
 import Graph from './components/Graph';
+import Q2Plot from './components/Q2Plot'
 
 const { Header, Content, Sider } = Layout;
-
 
 
 const App = () => {
@@ -18,7 +18,9 @@ const App = () => {
   const renderGraph = (Q) => {
     switch (Number(Q)) {
       case 1: return <Graph data={data} />;
-      case 2: return null;
+
+      case 2: return (<Q2Plot />);
+
       case 3: {return <div id="visualization" class="vis_container"><svg id="graph" height={800}></svg></div>};
       default: return <div>Unsupported question selected</div>;
     }

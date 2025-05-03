@@ -5,10 +5,13 @@ import re
 from collections import defaultdict
 import networkx as nx
 import json
+import pandas as pd
 
+df = pd.read_csv("../data/df_expanded_with_sentiment.csv")
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'utils')))
 from dbop import setup_database
+
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.conn = setup_database("../db", False)
@@ -22,60 +25,9 @@ app.filters = {
     }
 }
 
-app.schema = {
-    "nodes": [
-        # {
-        #     "label": "Article",
-        #     "derived": False,
-        #     "attributes": ["id", "source", "title", "author", "publish_date"],
-        # }, 
-        {
-            "label": "Source",
-            "derived": False,
-            "attributes": ["id", "name"],
-        }
-    ],
-    "relations": [
-        # {
-        #     "label": "References",
-        #     "from": "Article",
-        #     "to": "Article",
-        #     "derived": False,
-        #     "weight": "similarity"
-        # }, 
-        # {
-        #     "label": "PublishedBy",
-        #     "from": "Article",
-        #     "to": "Source",
-        #     "derived": False
-        # }, 
-        {
-            "label": "ReferencesSource",
-            "derived": True,
-            "from": "Source",
-            "to": "Source",
-            "weight": "count"
-        }
-    ]
-}
-
-@app.route('/nodes', methods=['GET'])
-def get_nodes():
-    return jsonify(app.schema["nodes"])
-
-@app.route('/rels', methods=['POST'])
-def get_compatible_rels():
-    req = request.get_json()
-    selected_nodes = req["selected_nodes"]
-    rels = []
-    for r in app.schema["relations"]:
-        if (r["from"] in selected_nodes) and (r["to"] in selected_nodes):
-            rels.append(r)
-    return jsonify(rels)
-
 
 @app.route('/data', methods=["POST"])
-def get_data():
+def get_q1_data():
     req = request.get_json()
     filters = req.get("filters", {})
     configs = req.get("configs", {})
@@ -261,6 +213,70 @@ def api_status():
         return jsonify({"status": "ok"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/q2/entities")
+def get_entities():
+    entities = sorted(df["entities"].dropna().unique())
+    return jsonify(entities)
+
+@app.route("/q2/sources")
+def get_sources():
+    sources = sorted(df["source"].dropna().unique())
+    return jsonify(sources)
+
+@app.route("/q2/source_data")
+def get_source_data():
+    source = request.args.get("source")
+    if not source:
+        return jsonify([])
+    filtered = df[df["source"] == source]
+    # Group by entity, get mean sentiment and the first content for each entity
+    pivot = (
+        filtered.groupby("entities")
+        .agg({"entity_sentiment": "mean", "content": "first"})
+        .reset_index()
+    )
+    result = pivot.rename(
+        columns={"entities": "x", "entity_sentiment": "y", "content": "content"}
+    ).to_dict(orient="records")
+    return jsonify(result)
+
+@app.route("/q2/source_entity_heatmap")
+def source_entity_heatmap():
+    source = request.args.get("source")
+    if not source:
+        return jsonify({"entities": [], "sentiments": [], "contents": []})
+    filtered = df[df["source"] == source]
+    # Group by entity, get mean sentiment and the first content for each entity
+    pivot = (
+        filtered.groupby("entities")
+        .agg({"entity_sentiment": "mean", "content": "first"})
+        .reset_index()
+    )
+    result = {
+        "entities": pivot["entities"].tolist(),
+        "sentiments": pivot["entity_sentiment"].tolist(),
+        "contents": pivot["content"].tolist()
+    }
+    return jsonify(result)
+
+@app.route("/q2/data")
+def get_q2_data():
+    entity = request.args.get("entity")
+    if not entity:
+        return jsonify([])
+    filtered = df[df["entities"] == entity]
+    # Group by source, get mean sentiment and the first content for each source
+    pivot = (
+        filtered.groupby("source")
+        .agg({"entity_sentiment": "mean", "content": "first"})
+        .reset_index()
+    )
+    result = pivot.rename(
+        columns={"source": "x", "entity_sentiment": "y", "content": "content"}
+    ).to_dict(orient="records")
+    return jsonify(result)
+
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5002, debug=True)

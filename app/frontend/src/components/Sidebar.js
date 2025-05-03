@@ -57,16 +57,24 @@ function applyEmailFilters(currentEmailGraphData, currentPersonPersonFilter, cur
   Visualization.render({ nodes, links }, { view: 'person-person' });
 }
 
+
 const SidebarFilter = ({ currentQ, setData }) => {
   const {
     nodeSizeMetric,
     setNodeSizeMetric,
     nodeColorMetric,
-    setNodeColorMetric
+    setNodeColorMetric,
+    q2Entity,
+    setQ2Entity,
+    q2Source,
+    setQ2Source
   } = useGraphConfig();
 
   const [graphSource, setGraphSource] = useState("article")
   const [Q3Graph, setQ3Graph] = useState("org-person")
+    
+  const [entities, setEntities] = useState([]);
+  const [sources, setSources] = useState([]);
 
   const [pendingFilters, setPendingFilters] = useState({ 
     minEdgeRefCount: 0,
@@ -81,6 +89,7 @@ const SidebarFilter = ({ currentQ, setData }) => {
   })
 
   const [Q3Data, setQ3Data] = useState({nodes: [], links:[]})
+
 
   useEffect(() => {
     const fetchAndRenderQ3Data = async () => {
@@ -98,6 +107,16 @@ const SidebarFilter = ({ currentQ, setData }) => {
     }
     if (currentQ == 1 && nodeSizeMetric && nodeColorMetric){
       getData(currentQ);
+    }
+    else if (currentQ == 2){
+      fetch("/api/q2/entities").then(res => res.json()).then(res => {
+        setEntities(res);
+        setQ2Entity(res[0]);
+      });
+      fetch("/api/q2/sources").then(res => res.json()).then(res => {
+        setSources(res);
+        setQ2Source(res[0]);
+      });
     }
     else if (currentQ == 3 && graphSource){
       Visualization.init("#visualization");
@@ -196,6 +215,33 @@ const SidebarFilter = ({ currentQ, setData }) => {
     </Form>
   )
     
+
+  const Q2Filters = () => (
+    <Form layout="vertical">
+      <Form.Item label="Select Entity">
+        <Select
+          value={q2Entity}
+          onChange={val => setQ2Entity(val)}
+        >
+          {entities.map(ent => (
+            <Option key={ent} value={ent}>{ent}</Option>
+          ))}
+        </Select>
+      </Form.Item>
+  
+      <Form.Item label="Select Source">
+        <Select
+          value={q2Source}
+          onChange={val => setQ2Source(val)}
+        >
+          {sources.map(src => (
+            <Option key={src} value={src}>{src}</Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Form>
+  );
+
   const Q3Config = () => {
     const graphSelect = 
     <Form.Item label="Select Graph">
@@ -331,6 +377,7 @@ const SidebarFilter = ({ currentQ, setData }) => {
   const renderConfig = () => {
     switch (Number(currentQ)) {
       case 1: return Q1Config();
+      case 2: return null;
       case 3: return Q3Config();
       default: return <div>Unsupported question selected</div>;
     }
@@ -339,6 +386,7 @@ const SidebarFilter = ({ currentQ, setData }) => {
   const renderFilters = () => {
     switch (Number(currentQ)) {
       case 1: return Q1Filters();
+      case 2: return Q2Filters();
       case 3: return Q3Filters();
       default: return <div>Unsupported question selected</div>;
     }
